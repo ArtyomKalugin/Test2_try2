@@ -29,7 +29,7 @@ public class MainClass {
     private FactoryParsingServiceImpl factoryService = new FactoryParsingServiceImpl();
 
     public static void main(String[] args) throws Exception {
-        new MainClass().run("");
+        new MainClass().run("C:\\Users\\HUAWEI\\IdeaProjects\\q42-parsing2\\src\\itis\\parsing2\\resources\\1");
     }
 
     private void run(String factoryDirectoryPath) throws Exception {

@@ -20,5 +20,14 @@ public final class Factory {
 
     private List<String> departments;
 
-
+    @Override
+    public String toString() {
+        return "Factory{" +
+                "title='" + title + '\'' +
+                ", organizationChiefFullName='" + organizationChiefFullName + '\'' +
+                ", description='" + description + '\'' +
+                ", amountOfWorkers=" + amountOfWorkers +
+                ", departments=" + departments +
+                '}';
+    }
 }
