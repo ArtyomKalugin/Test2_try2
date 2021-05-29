@@ -108,46 +108,44 @@ public class FactoryParsingServiceImpl implements FactoryParsingService {
                 field.setAccessible(true);
 
                 field.set(factory, parsedData.get(field.getName()));
-            }
-
-
-            for(Annotation annotation : field.getAnnotations()){
-                if(annotation instanceof NotBlank){
-                    if(parsedData.get(field.getName()) == null || parsedData.get(field.getName()).equals("")){
-                        errors.add(new FactoryParsingException.FactoryValidationError(field.getName(),
-                                "The value is null or empty string"));
-
-                        break;
-
-                    } else{
-                        field.setAccessible(true);
-
-                        field.set(factory, parsedData.get(field.getName()));
-                    }
-                }
-
-                if(annotation instanceof Concatenate){
-                    String result = "";
-                    ArrayList<String> toJoin = new ArrayList<>();
-
-                    for(String fieldName : ((Concatenate) annotation).fieldNames()){
-                        if(parsedData.containsKey(fieldName)){
-                            toJoin.add(parsedData.get(fieldName));
-                        } else {
+            } else{
+                for(Annotation annotation : field.getAnnotations()){
+                    if(annotation instanceof NotBlank){
+                        if(parsedData.get(field.getName()) == null || parsedData.get(field.getName()).equals("")){
                             errors.add(new FactoryParsingException.FactoryValidationError(field.getName(),
-                                    "Filed named " + fieldName + " is not exist"));
+                                    "The value is null or empty string"));
 
                             break;
+
+                        } else{
+                            field.setAccessible(true);
+
+                            field.set(factory, parsedData.get(field.getName()));
                         }
+                    }
 
-                        result = String.join(((Concatenate) annotation).delimiter(), toJoin);
-                        field.setAccessible(true);
+                    if(annotation instanceof Concatenate){
+                        String result = "";
+                        ArrayList<String> toJoin = new ArrayList<>();
 
-                        field.set(factory, result);
+                        for(String fieldName : ((Concatenate) annotation).fieldNames()){
+                            if(parsedData.containsKey(fieldName)){
+                                toJoin.add(parsedData.get(fieldName));
+                            } else {
+                                errors.add(new FactoryParsingException.FactoryValidationError(field.getName(),
+                                        "Filed named " + fieldName + " is not exist"));
+
+                                break;
+                            }
+
+                            result = String.join(((Concatenate) annotation).delimiter(), toJoin);
+                            field.setAccessible(true);
+
+                            field.set(factory, result);
+                        }
                     }
                 }
             }
-
         }
 
         if(errors.size() > 0){
